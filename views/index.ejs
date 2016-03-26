@@ -3,7 +3,7 @@
 	<head>
 		<meta charset= "UTF-8">
 		<title>MovieVerse</title>
-		<link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
 	</head>	
 	<body>
 		<div class= "text-center">
@@ -11,15 +11,16 @@
 		</div>
 		<% for (var i =0; i< movies.length; i+=6){ %>
 			<div class="row">
-				<% for(var j = 0; j<6; j++) { %>
+				<% for(var j = 0; j<6 && i +j<movies.length; j++) { %>
 					<div class = "col-md-2 text-center">
-						<%= movies[i].desc %>
+						<%= movies[i + j].desc %>
+						<img src= <%= movies[i + j].imagePath %> width='100%'>
 					</div>
 				<% } %>
 			</div> 
 		<% } %>
 		
-		<script src="jquery/dist/jquery.js"></script>
-		<script src="bootstrap/dist/css/bootstrap.css"></script>
+		<script src="bower_components/jquery/dist/jquery.js"></script>
+		<script src="bower_components/bootstrap/dist/css/bootstrap.css"></script>
 	</body>
 </html>

@@ -4,18 +4,14 @@ var path = require('path');
 
 
 var movieList = [
-	{desc: 'Movie 1'},
-	{desc: 'Movie 1'},
-	{desc: 'Movie 1'},
-	{desc: 'Movie 1'},
-	{desc: 'Movie 1'},
-	{desc: 'Movie 1'},
-	{desc: 'Movie 1'},
-	{desc: 'Movie 1'},
-	{desc: 'Movie 1'},
-	{desc: 'Movie 1'},
-	{desc: 'Movie 1'},
-	{desc: 'Movie 1'}
+	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'},
+	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'},
+	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'},
+	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'},
+	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'},
+	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'},
+	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'},
+	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'}
 ];
 
 app.get('/',(req, res) => {
@@ -28,7 +24,7 @@ app.get('/',(req, res) => {
 //configuration
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname,'views'));
-app.use(express.static(path.join(__dirname,'bower_components')));
+app.use(express.static(__dirname));
 
 //server port
 app.listen(1337, () =>{
