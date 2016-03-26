@@ -2,8 +2,27 @@ var express = require('express');
 var app = express();
 var path = require('path');
 
+
+var movieList = [
+	{desc: 'Movie 1'},
+	{desc: 'Movie 1'},
+	{desc: 'Movie 1'},
+	{desc: 'Movie 1'},
+	{desc: 'Movie 1'},
+	{desc: 'Movie 1'},
+	{desc: 'Movie 1'},
+	{desc: 'Movie 1'},
+	{desc: 'Movie 1'},
+	{desc: 'Movie 1'},
+	{desc: 'Movie 1'},
+	{desc: 'Movie 1'}
+];
+
 app.get('/',(req, res) => {
-	res.render('index');
+	res.render('index', {
+		title: 'MovieVerse',
+		movies: movieList
+	});
 });
 
 //configuration
