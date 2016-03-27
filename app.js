@@ -10,7 +10,6 @@ var movieList = [
 	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'},
 	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'},
 	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'},
-	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'},
 	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'}
 ];
 

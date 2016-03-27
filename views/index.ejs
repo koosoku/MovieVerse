@@ -9,15 +9,23 @@
 		<div class= "text-center">
 			<h1><%= title %></h1>
 		</div>
-		<% for (var i =0; i< movies.length; i+=6){ %>
-			<div class="row">
-				<% for(var j = 0; j<6 && i +j<movies.length; j++) { %>
-					<div class = "col-md-2 text-center">
-						<%= movies[i + j].desc %>
-						<img src= <%= movies[i + j].imagePath %> width='100%'>
-					</div>
-				<% } %>
-			</div> 
+		<% for (var i =0; i< movies.length; i+=5){ %>
+			<div class= 'center-block'>
+				<div class="row">
+					<div class = 'col-md-1'></div>
+					<% if (i+ 5 > movies.length) { %>
+						<% for(var j = 0; j < 5- (movies.length - i); j++) { %>
+							<div class ="col-md-1"> </div>
+						<% } %>
+					<% } %>
+					<% for(var j = 0; j<5 && i +j<movies.length; j++) { %>
+						<div class = "col-md-2 text-center">
+							<%= movies[i + j].desc %>
+							<img src= <%= movies[i + j].imagePath %> width='100%'>
+						</div>
+					<% } %>
+				</div> 
+			</div>
 		<% } %>
 		
 		<script src="bower_components/jquery/dist/jquery.js"></script>
