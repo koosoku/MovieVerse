@@ -1,0 +1,24 @@
+{
+  "name": "movie_verse",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "ejs": "^2.4.1",
+    "express": "^4.13.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koosoku/MovieVerse.git"
+  },
+  "author": "Kyle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/koosoku/MovieVerse/issues"
+  },
+  "homepage": "https://github.com/koosoku/MovieVerse#readme"
+}
