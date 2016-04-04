@@ -23,14 +23,47 @@ var movieList = [
 	{id: 1, desc: 'Movie', imagePath:'./images/movie.jpg'}
 ];
 
-app.get('/',(req, res) => {
-		request('https://api.themoviedb.org/3/movie/550?api_key=8a439f408d3ed4c974abe73cc1645699', function (err, res, body) {
+function test(){
+	request('https://api.themoviedb.org/3/movie/550?api_key=8a439f408d3ed4c974abe73cc1645699', function (err, res, body) {
 	  if (!err && res.statusCode == 200) {
 	  	var obj = JSON.parse(body);
 	    console.log(baseURL + posterSize[5]+ obj.poster_path);
 	    movieList.push({id: 1, desc: obj.original_title, imagePath: baseURL + posterSize[5]+ obj.poster_path});
 	  }
 	});
+}
+
+function fetchMovieByID(ID) {
+	request('https://api.themoviedb.org/3/movie/'+ID +'?api_key=8a439f408d3ed4c974abe73cc1645699',function(err,res,body){
+		// console.log(body);
+		if (!err && res.statusCode == 200) {
+			var obj = JSON.parse(body);
+			if(obj.poster_path){
+		    	console.log(baseURL + posterSize[5]+ obj.poster_path);
+		    	movieList.push({id: 1, desc: obj.original_title, imagePath: baseURL + posterSize[5]+ obj.poster_path});
+			}
+		}
+	});
+}
+
+function search(query){
+	request('https://api.themoviedb.org/3/search/keyword?api_key=8a439f408d3ed4c974abe73cc1645699&query='+query,function(err,res,body){
+		if (!err && res.statusCode == 200) {
+			var jsonObj = JSON.parse(body);
+			for (var i = 0; i<jsonObj.results.length; i++) {
+			    console.log(jsonObj.results[i].id);
+			    fetchMovieByID(jsonObj.results[i].id);
+			}
+		console.log(jsonObj);
+		}
+
+	});
+
+}
+
+app.get('/',(req, res) => {
+	//test();
+	search('dead');
 	res.render('index', {
 		title: 'MovieVerse',
 		movies: movieList
