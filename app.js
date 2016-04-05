@@ -63,7 +63,8 @@ function search(query){
 
 }
 
-app.get('/',(req, res) => {
+
+app.get('/',function(req, res){
 	//test();
 	search('dead');
 	res.render('index', {
@@ -78,6 +79,6 @@ app.set('views', path.join(__dirname,'views'));
 app.use(express.static(__dirname));
 
 //server port
-app.listen(1337, () =>{
+app.listen(1337, function(){
 	console.log('ready on port 1337');
 } );
