@@ -1,17 +1,12 @@
-var express = require('express');
-var app = express();
-var path = require('path');
-// var bodyParser = require('body-parser');
-
-var request = require('request');
-
-var baseURL ="https://image.tmdb.org/t/p/";
-var posterSize = [
+const  	express = require('express');
+		app = express();
+	 	path = require('path');
+ 		request = require('request');
+		pg = require('pg');
+const baseURL ="https://image.tmdb.org/t/p/";
+const posterSize = [
 	"w92", "w154","w185","w342","w500","w780","original"
 ];
-
-// app.use(bodyParser());
-
 
 var movieList=[];
 
@@ -42,7 +37,6 @@ function fetchMovieByID(ID, callback) {
 }
 
 function search(query){
-
 	request('https://api.themoviedb.org/3/search/keyword?api_key=8a439f408d3ed4c974abe73cc1645699&query='+query,function(err,res,body){
 		movieList=[];
 		if (!err && res.statusCode == 200) {
@@ -65,7 +59,6 @@ function search(query){
 
 
 app.get('/',function(req, res){
-	//test();
 	search('dead');
 	res.render('index', {
 		title: 'MovieVerse',
