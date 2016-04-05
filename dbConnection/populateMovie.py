@@ -6,10 +6,9 @@ cur = conn.cursor()
 
 def insertIntoDB(results):
     try:
-        print 'we in here'
-        cur.execute('INSERT INTO Movie (movieid,name,datereleased) VALUES (%s, %s,%s)', (results['id'],results['title'], results['release_date'],))
+        cur.execute('INSERT INTO Movie (movieid,name,datereleased) VALUES (%s, %s,%s)', (results['id'],results['title'], results['release_date']))
     except:
-        print 'we failed here'
+        print 'movie already in the db'
         pass
     conn.commit()
 
