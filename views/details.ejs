@@ -1,0 +1,25 @@
+<!doctype html>
+    <html lang='en'>
+    <head>
+        <meta charset= "UTF-8">
+        <title>MovieVerse</title>
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    </head>
+    <body>
+        <div style="width:50%; margin:auto;">
+            <div class= "text-center">
+                <img src=<%=backDropPath%> style="width:100%;">
+                <h1><%= title %></h1>
+            </div>
+            <div class>
+                <h2>Description:</h2>
+                <p><%= description %></p>
+                <div class ="stars" style="margin:auto; width:100%">
+                    <% for(var j = 0; j<10; j++) { %>
+                        <img style="width:9%"src=../images/rating.png>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
