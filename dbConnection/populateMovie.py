@@ -1,6 +1,8 @@
 import psycopg2
 import requests
 
+import time
+
 conn = psycopg2.connect("dbname='test_db' user='kyle' host='localhost' password='kyle1234' ")
 cur = conn.cursor()
 
@@ -35,4 +37,43 @@ def requestPopularMove(startPage,endPage):
         for i in range(len(results)):
             insertIntoDB(results[i])
 
-requestPopularMove(1,10)
+def addImagePathColumn():
+    try:
+        cur.execute('ALTER TABLE movie ADD imagepath VARCHAR(50)')
+        conn.commit()
+    except:
+        print "failed to add column"
+        pass
+
+
+def addImagePathFromID(id):
+    print id
+    r = requests.get('https://api.themoviedb.org/3/movie/' + str(id) + '?api_key=8a439f408d3ed4c974abe73cc1645699')
+    if 'status_code' in r.json():
+        print time.ctime()
+        time.sleep(10)
+        print time.ctime()
+        addImagePathFromID(id)
+    else:
+        cur.execute('UPDATE movie SET imagepath = %s WHERE movieid = %s',(r.json()['poster_path'],id))
+        conn.commit()
+
+def readFromTable():
+    try:
+        cur.execute('SELECT movieid FROM movie')
+        rows = cur.fetchall()
+        print len(rows)
+        for i in range(len(rows)):
+            print rows[i][0]
+            addImagePathFromID(rows[i][0])
+    except Exception as e:
+        print e
+        pass
+
+readFromTable()
+
+
+
+
+
+# addImagePathColumn()
