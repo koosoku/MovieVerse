@@ -20,8 +20,10 @@
 					<% } %>
 					<% for(var j = 0; j<5 && i +j<movies.length; j++) { %>
 						<div class = "col-md-2 text-center">
-							<%= movies[i + j].desc %>
-							<img src= <%= movies[i + j].imagePath %> width='100%'>
+							<a href = "/movie/<%= movies[i+j].id%>">
+								<%= movies[i + j].title %>
+								<img src= <%= movies[i + j].imagePath %> width='100%'>
+							</a>
 						</div>
 					<% } %>
 				</div> 
