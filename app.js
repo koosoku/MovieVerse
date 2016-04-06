@@ -1,4 +1,5 @@
 const express = require('express');
+request = require('request');
 const app = express();
 const path = require('path');
 const pg = require('pg');
@@ -15,10 +16,7 @@ function fetchMovieByID(ID, callback) {
 		// console.log(body);
 		if (!err && res.statusCode == 200) {
 			var obj = JSON.parse(body);
-			if(obj.poster_path){
-		    	console.log(baseURL + posterSize[5]+ obj.poster_path);
-		    	callback({id: 1, desc: obj.original_title, imagePath: baseURL + posterSize[5]+ obj.poster_path});
-			}
+			callback(obj);
 		}else{
 			console.log(err);
 			console.log(body);
@@ -46,7 +44,7 @@ function search(query){
 	});
 
 }
-function connectToDB(callback){
+function fetchAllMovies(callback){
 	var client = new pg.Client(require('./config/database.json'));
 	client.connect( function(err) {
 		if(err) {
@@ -58,11 +56,9 @@ function connectToDB(callback){
 				return
 			else{
 				for (var i =0 ; i< res.rows.length; i++){
-					var movieid = res.rows[i].movieid;
-					console.log(movieid);
-					fetchMovieByID(movieid, function(result){
-						movieList.push(result);
-					});
+					var result = res.rows[i];
+					console.log(result);
+					movieList.push({id: result.movieid, title: result.name , imagePath: baseURL + posterSize[5]+ result.imagepath})
 				}
 			}
 
@@ -77,13 +73,23 @@ function connectToDB(callback){
 }
 
 app.get('/',function(req, res){
-	connectToDB(function(){
+	fetchAllMovies(function(){
 		res.render('index', {
 			title: 'MovieVerse',
 			movies: movieList
 		});
 	});
 });
+app.get('/movie/:movieID',function(req,res){
+	fetchMovieByID(req.params.movieID, function(results){
+		console.log(results);
+		res.render('details',{
+			title:results.original_title,
+			description:results.overview,
+			backDropPath:baseURL + posterSize[5]+results.backdrop_path
+		})
+	})
+})
 
 //configuration
 app.set('view engine', 'ejs');
