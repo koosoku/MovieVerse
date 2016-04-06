@@ -1,8 +1,7 @@
-const  	express = require('express');
-		app = express();
-	 	path = require('path');
- 		request = require('request');
-		pg = require('pg');
+const express = require('express');
+const app = express();
+const path = require('path');
+const pg = require('pg');
 const baseURL ="https://image.tmdb.org/t/p/";
 const posterSize = [
 	"w92", "w154","w185","w342","w500","w780","original"
@@ -10,15 +9,6 @@ const posterSize = [
 
 var movieList=[];
 
-function test(){
-	request('https://api.themoviedb.org/3/movie/550?api_key=8a439f408d3ed4c974abe73cc1645699', function (err, res, body) {
-	  if (!err && res.statusCode == 200) {
-	  	var obj = JSON.parse(body);
-	    console.log(baseURL + posterSize[5]+ obj.poster_path);
-	    movieList.push({id: 1, desc: obj.original_title, imagePath: baseURL + posterSize[5]+ obj.poster_path});
-	  }
-	});
-}
 
 function fetchMovieByID(ID, callback) {
 	request('https://api.themoviedb.org/3/movie/'+ID +'?api_key=8a439f408d3ed4c974abe73cc1645699',function(err,res,body){
@@ -56,13 +46,42 @@ function search(query){
 	});
 
 }
+function connectToDB(callback){
+	var client = new pg.Client(require('./config/database.json'));
+	client.connect( function(err) {
+		if(err) {
+			console.log(err);
+			return res.status(500).json({ success: false, data: err});
+		}
+		var query = client.query("SELECT * FROM movie" , function(err,res){
+			if (err)
+				return
+			else{
+				for (var i =0 ; i< res.rows.length; i++){
+					var movieid = res.rows[i].movieid;
+					console.log(movieid);
+					fetchMovieByID(movieid, function(result){
+						movieList.push(result);
+					});
+				}
+			}
 
+		});
+		query.on('end', function() {
+			// console.log(movieList);
+			callback();
+		});
+
+
+	});
+}
 
 app.get('/',function(req, res){
-	search('dead');
-	res.render('index', {
-		title: 'MovieVerse',
-		movies: movieList
+	connectToDB(function(){
+		res.render('index', {
+			title: 'MovieVerse',
+			movies: movieList
+		});
 	});
 });
 
