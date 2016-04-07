@@ -5,7 +5,7 @@
 		<title>MovieVerse</title>
 		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
 	</head>	
-	<body>
+	<body style= "background-position: center; background-attachment:fixed; background-size: cover; background-repeat: no-repeat; background-image:url(images/blueSky.jpg)">
 		<div class= "text-center">
 			<h1><%= title %></h1>
 		</div>
@@ -21,8 +21,8 @@
 					<% for(var j = 0; j<5 && i +j<movies.length; j++) { %>
 						<div class = "col-md-2 text-center">
 							<a href = "/movie/<%= movies[i+j].id%>">
-								<%= movies[i + j].title %>
 								<img src= <%= movies[i + j].imagePath %> width='100%'>
+								<%= movies[i + j].title %>
 							</a>
 						</div>
 					<% } %>
