@@ -1,5 +1,5 @@
 const express = require('express');
-request = require('request');
+const request = require('request');
 const app = express();
 const path = require('path');
 const pg = require('pg');
@@ -12,15 +12,20 @@ var movieList=[];
 
 
 function fetchMovieByID(ID, callback) {
-	request('https://api.themoviedb.org/3/movie/'+ID +'?api_key=8a439f408d3ed4c974abe73cc1645699',function(err,res,body){
-		// console.log(body);
-		if (!err && res.statusCode == 200) {
-			var obj = JSON.parse(body);
-			callback(obj);
-		}else{
+	console.log(ID)
+	var client = new pg.Client(require('./config/database.json'));
+	var results=[];
+	client.connect( function(err) {
+		if(err) {
 			console.log(err);
-			console.log(body);
 		}
+		var query = client.query("SELECT * FROM movie WHERE movieid = $1 ;",[ID.toString()]);
+		query.on('row',function(row){
+			results.push(row);
+		});
+		query.on('end', function() {
+			callback(results);
+		});
 	});
 }
 
@@ -49,7 +54,6 @@ function fetchAllMovies(callback){
 	client.connect( function(err) {
 		if(err) {
 			console.log(err);
-			return res.status(500).json({ success: false, data: err});
 		}
 		var query = client.query("SELECT * FROM movie" , function(err,res){
 			if (err)
@@ -57,14 +61,12 @@ function fetchAllMovies(callback){
 			else{
 				for (var i =0 ; i< res.rows.length; i++){
 					var result = res.rows[i];
-					console.log(result);
-					movieList.push({id: result.movieid, title: result.name , imagePath: baseURL + posterSize[5]+ result.imagepath})
+					movieList.push({id: result.movieid, title: result.name , imagePath: baseURL + posterSize[5]+ result.poster_image_path})
 				}
 			}
 
 		});
 		query.on('end', function() {
-			// console.log(movieList);
 			callback();
 		});
 
@@ -84,9 +86,9 @@ app.get('/movie/:movieID',function(req,res){
 	fetchMovieByID(req.params.movieID, function(results){
 		console.log(results);
 		res.render('details',{
-			title:results.original_title,
-			description:results.overview,
-			backDropPath:baseURL + posterSize[5]+results.backdrop_path
+			title:results[0]['name'],
+			description:results[0]['description'],
+			backDropPath:baseURL + posterSize[5]+results[0]['backdrop_image_path']
 		})
 	})
 })
