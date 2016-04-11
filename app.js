@@ -91,6 +91,24 @@ function searchMovieByName(name,callback){
 		});
 	});
 }
+
+function fetchRatings(ID, callback){
+	var client = new pg.Client(require('./config/database.json'));
+	var results;
+	client.connect( function(err) {
+		if(err) {
+			console.log(err);
+		}
+		var query = client.query("SELECT AVG(rating) FROM watches WHERE movieid = $1 ;",[ID.toString()]);
+		query.on('row',function(row){
+			results = row;
+		});
+		query.on('end', function() {
+			console.log(results);
+			callback(results);
+		});
+	});
+}
 app.post('/search',function(req,res){
 	console.log(req.body);
 	var searchInput = req.body.search;
@@ -111,15 +129,18 @@ app.get('/',function(req, res){
 	});
 });
 app.get('/movie/:movieID',function(req,res){
-	fetchMovieByID(req.params.movieID, function(results){
-		console.log(results);
-		res.render('details',{
-			title:results[0]['name'],
-			description:results[0]['description'],
-			backDropPath:baseURL + posterSize[5]+results[0]['backdrop_image_path']
-		})
-	})
-})
+	fetchMovieByID(req.params.movieID,function(movieResults){
+		fetchRatings(req.params.movieID,function(ratings){
+			console.log(movieResults);
+			res.render('details',{
+				title:movieResults[0]['name'],
+				description:movieResults[0]['description'],
+				backDropPath:baseURL + posterSize[5]+movieResults[0]['backdrop_image_path'],
+				ratings: Math.round(ratings['avg'] * 100) / 100
+			});
+		});
+	});
+});
 
 app.get('/login',function(req,res){
 	res.render('login');
