@@ -3,11 +3,14 @@ const request = require('request');
 const app = express();
 const path = require('path');
 const pg = require('pg');
+const bodyParser = require('body-parser');
+
 const baseURL ="https://image.tmdb.org/t/p/";
 const posterSize = [
 	"w92", "w154","w185","w342","w500","w780","original"
 ];
 
+app.use(bodyParser());
 var movieList=[];
 
 
@@ -29,7 +32,7 @@ function fetchMovieByID(ID, callback) {
 	});
 }
 
-function search(query){
+function searchByTMDBAPI(query){
 	request('https://api.themoviedb.org/3/search/keyword?api_key=8a439f408d3ed4c974abe73cc1645699&query='+query,function(err,res,body){
 		movieList=[];
 		if (!err && res.statusCode == 200) {
@@ -45,7 +48,6 @@ function search(query){
 			console.log(err);
 			console.log(body);
 		}
-
 	});
 
 }
@@ -64,7 +66,6 @@ function fetchAllMovies(callback){
 					movieList.push({id: result.movieid, title: result.name , imagePath: baseURL + posterSize[5]+ result.poster_image_path})
 				}
 			}
-
 		});
 		query.on('end', function() {
 			callback();
@@ -73,7 +74,34 @@ function fetchAllMovies(callback){
 
 	});
 }
-
+function searchMovieByName(name,callback){
+	var client = new pg.Client(require('./config/database.json'));
+	var results=[];
+	console.log(name);
+	client.connect( function(err) {
+		if(err) {
+			console.log(err);
+		}
+		var query = client.query("SELECT * FROM movie WHERE LOWER(name) LIKE $1 ;",['%'+name+'%']);
+		query.on('row',function(row){
+			results.push({id: row.movieid, title: row.name, imagePath:baseURL + posterSize[5]+row.poster_image_path});
+		});
+		query.on('end', function() {
+			callback(results);
+		});
+	});
+}
+app.post('/search',function(req,res){
+	console.log(req.body);
+	var searchInput = req.body.search;
+	searchMovieByName(searchInput,function(results){
+		console.log(results);
+		res.render('search',{
+			title: 'MovieVerse',
+			movies: results
+		})
+	});
+});
 app.get('/',function(req, res){
 	fetchAllMovies(function(){
 		res.render('index', {
@@ -93,6 +121,11 @@ app.get('/movie/:movieID',function(req,res){
 	})
 })
 
+app.get('/login',function(req,res){
+	res.render('login');
+}).post('/login',function(req,res){
+	console.log('we posting');
+});
 //configuration
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname,'views'));

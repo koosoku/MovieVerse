@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang='en'>
+    <head>
+        <meta charset= "UTF-8">
+        <title>MovieVerse</title>
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    </head>
+    <body style="background-color:#F0F8FF">
+        <div class= "text-center" >
+            <h1><%= title %></h1>
+        </div>
+        <div class = "text-center" style="height:50px">
+            <form action="/search" method="post">
+                <input type="text" name="search">
+                <input type="submit" value="Search">
+            </form>
+        </div>
+        <% for (var i =0; i< movies.length; i+=5){ %>
+            <div class= 'center-block'>
+                <div class="row">
+                    <div class = 'col-md-1'></div>
+                    <% if (i+ 5 > movies.length) { %>
+                        <% for(var j = 0; j < 5- (movies.length - i); j++) { %>
+                            <div class ="col-md-1"> </div>
+                        <% } %>
+                    <% } %>
+                    <% for(var j = 0; j<5 && i +j<movies.length; j++) { %>
+                        <div class = "col-md-2 text-center">
+                            <a href = "/movie/<%= movies[i+j].id%>">
+                                <img src= <%= movies[i + j].imagePath %> width='100%'>
+                                <%= movies[i + j].title %>
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
+
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/bootstrap/dist/css/bootstrap.css"></script>
+    </body>
+</html>
